@@ -23,7 +23,7 @@ export class BankStatementService extends BaseService {
   }
 
   async pushData() {
-    fs.createReadStream('../tool/data.csv')
+    fs.createReadStream('../tool/data2.csv')
       .pipe(csv())
       .on('data', (data) => {
         console.log(data);
