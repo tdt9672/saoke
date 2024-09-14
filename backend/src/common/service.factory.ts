@@ -1,11 +1,14 @@
 import { Injectable, Logger, OnModuleInit, Type } from '@nestjs/common';
-import { Entity, Repository } from 'redis-om';
+import { Entity, EntityInternal, Repository } from 'redis-om';
 export type BaseEntity = Entity & { id?: number | string };
 export interface IBaseService<T extends BaseEntity> {
   repository: Repository<T>;
   logger: Logger;
   save(entity: T): Promise<T>;
-  search(text: string): Promise<T[]>;
+  search(
+    key: Exclude<keyof T, keyof EntityInternal>,
+    text: string,
+  ): Promise<T[]>;
 }
 export const createBaseService = <T extends BaseEntity>(
   entityName: string,
@@ -22,12 +25,8 @@ export const createBaseService = <T extends BaseEntity>(
     async save(entity: T) {
       return this.repository.save(entity);
     }
-    async search(text: string) {
-      return this.repository
-        .search()
-        .where('details' as any)
-        .matches(text)
-        .returnAll();
+    async search(key: Exclude<keyof T, keyof EntityInternal>, text: string) {
+      return this.repository.search().where(key).matches(text).returnAll();
     }
   }
 

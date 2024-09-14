@@ -8,6 +8,6 @@ export class BankStatementController {
 
   @Post('search')
   async search(@Body('text') text: string): Promise<Statement[]> {
-    return this.bankStatementService.search(text);
+    return this.bankStatementService.search('details', text);
   }
 }
